@@ -8,18 +8,29 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-10.15]
+        os: [ubuntu-18.04, ubuntu-20.04, macos-10.15]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Install package dependencies
+        if:  ${{ matrix.os == 'ubuntu-18.04' }}
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y apt-transport-https ca-certificates gnupg software-properties-common wget
+          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+          sudo apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt install gcc-8 g++-8
+          echo "::set-env name=CXX::/usr/bin/g++"
+          echo "::set-env name=CXXFLAGS::-lstdc++fs"
+
+      - name: Install package dependencies
         if:  startsWith( matrix.os, 'ubuntu' )
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y cmake pkg-config gfortran nvidia-cuda-toolkit valgrind \
-                                  libfmt-dev libspdlog-dev nlohmann-json3-dev
+          sudo apt-get install -y cmake pkg-config gfortran nvidia-cuda-toolkit valgrind libssl-dev
 
       - name: Install package dependencies
         if:  startsWith( matrix.os, 'macos' )
