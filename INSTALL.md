@@ -45,7 +45,7 @@ Install dependencies from packages on Arch
 Install dependencies from packages on Ubuntu 20.04
 
     apt-get install python cmake pkg-config
-    apt-get install libfmt-dev libspdlog-dev nlohmann-json3-dev
+    apt-get install libfmt-dev libspdlog-dev nlohmann-json3-dev libssl-dev
     apt-get install libgrpc++-dev protobuf-compiler-grpc
 
 Install dependencies from packages from Brew
